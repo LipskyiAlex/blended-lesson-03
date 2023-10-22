@@ -1,28 +1,28 @@
 import { useEffect, useState } from 'react';
-import { getCountries } from 'service/country-service';
+import { useParams } from 'react-router-dom';
+import { fetchCountry } from 'service/country-service';
 
-export const useFetchCountries = () => {
-  const [countries, setCountries] = useState([]);
+const useFetchCountry = () => {
+  const [country, setCountry] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { id } = useParams();
   useEffect(() => {
     setIsLoading(true);
-
     const fetchData = async () => {
       try {
-        const data = await getCountries();
-        setCountries(data);
+        const data = await fetchCountry(id);
+        setCountry(data);
       } catch (error) {
         setError(error.message);
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchData();
-  }, []);
-
-  return { countries, isLoading, error };
+  }, [id]);
+  return { country, isLoading, error };
 };
+
+export default useFetchCountry;
